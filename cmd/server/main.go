@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/esma-yigit/prod-ready-rest-api/internal/database"
 	transportHTTP "github.com/esma-yigit/prod-ready-rest-api/internal/transport/http"
 	"net/http"
 )
@@ -13,6 +14,11 @@ type App struct {
 
 func (a *App) Run() error {
 	fmt.Println("Setting up our App")
+	var err error
+	_, err = database.NewDatabase()
+	if err != nil {
+		return err
+	}
 
 	handler := transportHTTP.NewHandler()
 	handler.SetupRoutes()
