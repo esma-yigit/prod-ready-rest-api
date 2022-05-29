@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	transportHTTP "github.com/esma-yigit/prod-ready-rest-api/internal/transport/http"
+	"net/http"
+)
 
 //App => the struct which contains things like pointers
 //to database connection
@@ -9,6 +13,15 @@ type App struct {
 
 func (a *App) Run() error {
 	fmt.Println("Setting up our App")
+
+	handler := transportHTTP.NewHandler()
+	handler.SetupRoutes()
+
+	if err := http.ListenAndServe(":8080", handler.Router); err != nil {
+		fmt.Println("Failed to set up server")
+		return err
+	}
+
 	return nil
 }
 
@@ -17,6 +30,7 @@ func (a *App) Run() error {
 func main() {
 	fmt.Println("Go REST API Course")
 	app := App{}
+
 	if err := app.Run(); err != nil {
 		fmt.Println("Error starting up our application")
 		fmt.Println(err)
